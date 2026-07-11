@@ -1,0 +1,6 @@
+{
+  "name": "Lucknow Hostel & PG Manager",
+  "description": "A high-performance, simple-to-use Hostel and PG Management System for owners, wardens, guards, and students in Lucknow, UP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
