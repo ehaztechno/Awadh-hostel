@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Student, Payment, Room, UserRole } from '../types';
-import { Search, Phone, ShieldAlert, CheckCircle, CreditCard, ChevronRight, FileText, UserMinus, Plus, Trash2 } from 'lucide-react';
+import { Search, Phone, ShieldAlert, CheckCircle, CreditCard, ChevronRight, FileText, UserMinus, Plus, Trash2, MessageSquare, Send } from 'lucide-react';
 
 interface StudentsListProps {
   role: UserRole;
@@ -133,7 +133,14 @@ export default function StudentsList({
 
                     {/* Name & Contact */}
                     <div>
-                      <h3 className="font-sans font-bold text-sm text-slate-900">{student.name}</h3>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-sans font-bold text-sm text-slate-900 truncate">{student.name}</h3>
+                        {statusTab === 'Active' && pendingRent && (
+                          <span className="bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase tracking-tight shadow-xs animate-pulse">
+                            ⚠️ Overdue
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[11px] font-mono text-slate-500 mt-0.5">📞 +91 {student.mobile}</p>
                     </div>
 
@@ -173,17 +180,48 @@ export default function StudentsList({
                     </div>
 
                     {statusTab === 'Active' && canManage && pendingRent && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onCollectRentTrigger(student);
-                        }}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] py-1 px-2.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
-                        id={`quick-pay-btn-${student.id}`}
-                      >
-                        <CreditCard className="w-3 h-3" />
-                        ₹ Pay Rent
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=91${student.mobile.replace(/\D/g, '')}&text=${encodeURIComponent(
+                            `Dear ${student.name}, this is a friendly reminder that your monthly PG rent of ₹${pendingRent.amount} for Room ${student.roomNumber} is due on 10th July 2026. Please pay via UPI to avoid any late fees. Thank you! - Avadh Residency`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Persist to local storage logs
+                            const saved = localStorage.getItem('avadh_whatsapp_logs');
+                            const logs = saved ? JSON.parse(saved) : [];
+                            const newLog = {
+                              id: `log-ind-${Date.now()}`,
+                              studentName: student.name,
+                              phone: student.mobile,
+                              type: 'Manual-Broadcast' as const,
+                              timestamp: new Date().toLocaleString('en-US', { hour12: true, dateStyle: 'medium', timeStyle: 'short' }),
+                              status: 'Sent' as const,
+                              message: `Dear ${student.name}, this is a friendly reminder that your monthly PG rent of ₹${pendingRent.amount} for Room ${student.roomNumber} is due on 10th July 2026. Please pay via UPI to avoid any late fees. Thank you! - Avadh Residency`
+                            };
+                            localStorage.setItem('avadh_whatsapp_logs', JSON.stringify([newLog, ...logs]));
+                          }}
+                          className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 hover:border-emerald-300 font-bold text-[9px] py-1 px-2 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                          title="Direct WhatsApp Alert"
+                        >
+                          <MessageSquare className="w-3 h-3 text-emerald-500 shrink-0" />
+                          <span>Notify</span>
+                        </a>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onCollectRentTrigger(student);
+                          }}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[9px] py-1 px-2 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                          id={`quick-pay-btn-${student.id}`}
+                        >
+                          <CreditCard className="w-3 h-3 shrink-0" />
+                          ₹ Pay
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -274,6 +312,34 @@ export default function StudentsList({
             {/* Profile Action Controls */}
             {canManage && selectedStudent.status === 'Active' && (
               <div className="pt-3 border-t border-slate-800 space-y-2">
+                {getStudentPendingRent(selectedStudent.id) && (
+                  <a
+                    href={`https://api.whatsapp.com/send?phone=91${selectedStudent.mobile.replace(/\D/g, '')}&text=${encodeURIComponent(
+                      `Dear ${selectedStudent.name}, this is a friendly reminder that your monthly PG rent of ₹${getStudentPendingRent(selectedStudent.id)?.amount} for Room ${selectedStudent.roomNumber} is due on 10th July 2026. Please pay via UPI to avoid any late fees. Thank you! - Avadh Residency`
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => {
+                      const saved = localStorage.getItem('avadh_whatsapp_logs');
+                      const logs = saved ? JSON.parse(saved) : [];
+                      const newLog = {
+                        id: `log-ind-${Date.now()}`,
+                        studentName: selectedStudent.name,
+                        phone: selectedStudent.mobile,
+                        type: 'Manual-Broadcast' as const,
+                        timestamp: new Date().toLocaleString('en-US', { hour12: true, dateStyle: 'medium', timeStyle: 'short' }),
+                        status: 'Sent' as const,
+                        message: `Dear ${selectedStudent.name}, this is a friendly reminder that your monthly PG rent of ₹${getStudentPendingRent(selectedStudent.id)?.amount} for Room ${selectedStudent.roomNumber} is due on 10th July 2026. Please pay via UPI to avoid any late fees. Thank you! - Avadh Residency`
+                      };
+                      localStorage.setItem('avadh_whatsapp_logs', JSON.stringify([newLog, ...logs]));
+                    }}
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 border border-emerald-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+                  >
+                    <MessageSquare className="w-4 h-4 text-white" />
+                    Notify via WhatsApp (One-Click)
+                  </a>
+                )}
+
                 <button
                   onClick={() => {
                     const pending = getStudentPendingRent(selectedStudent.id);
@@ -283,7 +349,7 @@ export default function StudentsList({
                       alert("July 2026 rent has already been paid for this student!");
                     }
                   }}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
                   id="profile-collect-rent-btn"
                 >
                   <CreditCard className="w-4 h-4" /> Collect Rent (₹)

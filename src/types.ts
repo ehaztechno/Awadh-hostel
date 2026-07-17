@@ -74,6 +74,7 @@ export interface Visitor {
   exitTime?: string;
   status: 'CheckedIn' | 'CheckedOut';
   vehicleNumber?: string;
+  entryToken?: string;
 }
 
 export interface Comment {

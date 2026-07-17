@@ -1,1 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ==========================================================================
+   MIDNIGHT OBSIDIAN PREMIUM DARK THEME (CORE LAYER OVERRIDES)
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+}
+
+/* Base Body Override */
+body {
+  background-color: #060813 !important;
+  color: #f1f5f9 !important;
+  font-family: "Inter", sans-serif;
+}
+
+/* App Root Wrapper Styling */
+#hostel-root-container {
+  background-color: #060813 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Main Top Header */
+#main-header {
+  background-color: #0a0e1c !important;
+  border-bottom: 1px solid #1e294b !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+#main-header h1 {
+  color: #ffffff !important;
+  letter-spacing: -0.025em !important;
+}
+
+/* Card Overrides (Light elements become obsidian rock sheets) */
+.bg-white,
+[class*="bg-white"] {
+  background-color: #0e1327 !important;
+  color: #f8fafc !important;
+  border-color: #1e294b !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Accent Panels & Subsections */
+.bg-slate-50,
+[class*="bg-slate-50"] {
+  background-color: #121932 !important;
+  color: #f1f5f9 !important;
+}
+
+.bg-slate-100,
+[class*="bg-slate-100"] {
+  background-color: #1a2342 !important;
+  color: #f8fafc !important;
+}
+
+.bg-slate-100\/50 {
+  background-color: #060813 !important;
+}
+
+/* Forms, Inputs, Dropdowns, Selects & Textareas */
+input,
+select,
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+input[type="time"] {
+  background-color: #0d1222 !important;
+  color: #ffffff !important;
+  border: 1px solid #23315a !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+  outline: none !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #4b5a84 !important;
+}
+
+/* Tables Styling */
+table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background-color: #0e1327 !important;
+}
+
+thead, th {
+  background-color: #121932 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #1e294b !important;
+}
+
+tbody tr {
+  border-bottom: 1px solid #1e294b !important;
+  transition: background-color 0.2s ease !important;
+}
+
+tbody tr:hover {
+  background-color: #141c36 !important;
+}
+
+/* Universal Border Override */
+.border,
+.border-2,
+.border-slate-100,
+.border-slate-200,
+.border-slate-300,
+[class*="border-slate-"] {
+  border-color: #1e294b !important;
+}
+
+/* Text Colors Precision Safeguards */
+.text-slate-950,
+.text-slate-900,
+.text-slate-800,
+[class*="text-slate-900"],
+[class*="text-slate-950"] {
+  color: #ffffff !important;
+}
+
+.text-slate-700,
+[class*="text-slate-700"] {
+  color: #f1f5f9 !important;
+}
+
+.text-slate-600,
+[class*="text-slate-600"] {
+  color: #cbd5e1 !important;
+}
+
+.text-slate-500,
+[class*="text-slate-500"] {
+  color: #94a3b8 !important;
+}
+
+.text-slate-400,
+[class*="text-slate-400"] {
+  color: #64748b !important;
+}
+
+/* Sidebar Buttons */
+aside button {
+  color: #cbd5e1 !important;
+  transition: all 0.2s ease !important;
+}
+
+aside button:hover {
+  background-color: #151d38 !important;
+  color: #ffffff !important;
+}
+
+aside button[class*="bg-indigo-600"] {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4) !important;
+}
+
+/* Dialog Overlay and Drawer Modals */
+div[role="dialog"],
+.fixed.inset-0.z-50 {
+  background-color: rgba(2, 4, 10, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+div[role="dialog"] .bg-white,
+.fixed.inset-0.z-50 .bg-white {
+  background-color: #0b1021 !important;
+  border: 1px solid #22305c !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Theme Accents (Color transformations for premium contrast) */
+
+/* Green / Emerald Overlay */
+.bg-emerald-50,
+[class*="bg-emerald-50"] {
+  background-color: #051a13 !important;
+  color: #34d399 !important;
+  border-color: #044e36 !important;
+}
+
+.text-emerald-800,
+.text-emerald-700 {
+  color: #a7f3d0 !important;
+}
+
+.bg-emerald-100 {
+  background-color: #044e36 !important;
+  color: #a7f3d0 !important;
+}
+
+/* Amber / Orange Overlay */
+.bg-amber-50,
+[class*="bg-amber-50"] {
+  background-color: #1a1202 !important;
+  color: #fbbf24 !important;
+  border-color: #5f370e !important;
+}
+
+.text-amber-800,
+.text-amber-700 {
+  color: #fde68a !important;
+}
+
+.bg-amber-100 {
+  background-color: #451a03 !important;
+  color: #fde68a !important;
+}
+
+/* Indigo Overlay */
+.bg-indigo-50,
+[class*="bg-indigo-50"] {
+  background-color: #0e1233 !important;
+  color: #818cf8 !important;
+  border-color: #272c6e !important;
+}
+
+.text-indigo-800,
+.text-indigo-700 {
+  color: #c7d2fe !important;
+}
+
+.bg-indigo-100 {
+  background-color: #1e1b4b !important;
+  color: #c7d2fe !important;
+}
+
+/* Red / Rose Overlay */
+.bg-rose-50,
+.bg-red-50,
+[class*="bg-rose-50"] {
+  background-color: #220811 !important;
+  color: #f43f5e !important;
+  border-color: #6f0d2c !important;
+}
+
+.text-rose-800,
+.text-rose-700,
+.text-red-800,
+.text-red-700 {
+  color: #fecdd3 !important;
+}
+
+.bg-red-100,
+.bg-rose-100 {
+  background-color: #4c0519 !important;
+  color: #fecdd3 !important;
+}
+
+/* Cyan / Blue AC Pill Badges */
+.bg-cyan-50,
+.bg-cyan-100,
+[class*="bg-cyan-"] {
+  background-color: #041d2d !important;
+  color: #22d3ee !important;
+  border-color: #083344 !important;
+}
+
+.text-cyan-800 {
+  color: #22d3ee !important;
+}
+
+/* Blue Badge Overlay */
+.bg-blue-50,
+[class*="bg-blue-50"] {
+  background-color: #061530 !important;
+  color: #60a5fa !important;
+  border-color: #1e3a8a !important;
+}
+
+.text-blue-800 {
+  color: #93c5fd !important;
+}
+
+/* Rent Receipts / Print Overlays */
+#rent-receipt-card {
+  background-color: #090e1a !important;
+  border: 1px solid #1e294b !important;
+}
+
+/* Print Specific Rules for Dark Mode (Preserve ink or style) */
+@media print {
+  body, #hostel-root-container, #rent-receipt-card {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+/* Custom Glow Elements for Midnight Obsidian */
+.midnight-glow {
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060813;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e294b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2d3d75;
+}
