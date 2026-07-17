@@ -28,6 +28,8 @@ import StudentsList from './components/StudentsList';
 import ComplaintsView from './components/ComplaintsView';
 import VisitorLog from './components/VisitorLog';
 import NoticesView from './components/NoticesView';
+import Login from './components/Login';
+import WhatsAppNotificationSystem from './components/WhatsAppNotificationSystem';
 
 import {
   Home,
@@ -43,7 +45,9 @@ import {
   ShieldCheck,
   CheckCircle2,
   X,
-  Printer
+  Printer,
+  MessageSquare,
+  LogOut
 } from 'lucide-react';
 
 export default function App() {
@@ -86,6 +90,29 @@ export default function App() {
     return localStorage.getItem('avadh_current_student_id') || 'std-001';
   });
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('avadh_is_authenticated') === 'true';
+  });
+
+  const handleLoginSuccess = (role: UserRole, studentId?: string) => {
+    setActiveRole(role);
+    if (studentId) {
+      setCurrentStudentId(studentId);
+    }
+    setIsAuthenticated(true);
+    if (role === 'Guard') {
+      setActiveTab('visitors');
+    } else {
+      setActiveTab('dashboard');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
+  const [showDevSwapper, setShowDevSwapper] = useState(false);
+
   // Navigation State
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
@@ -105,6 +132,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('avadh_role', activeRole);
   }, [activeRole]);
+
+  useEffect(() => {
+    localStorage.setItem('avadh_is_authenticated', String(isAuthenticated));
+  }, [isAuthenticated]);
 
   useEffect(() => {
     localStorage.setItem('avadh_rooms', JSON.stringify(rooms));
@@ -441,10 +472,15 @@ export default function App() {
     { id: 'students', label: 'Students Directory', icon: <Users className="w-4 h-4" />, roles: ['Owner', 'Manager'] },
     { id: 'visitors', label: 'Gate Visitors', icon: <Footprints className="w-4 h-4" />, roles: ['Owner', 'Manager', 'Guard'] },
     { id: 'complaints', label: 'Complaints', icon: <ShieldAlert className="w-4 h-4" />, roles: ['Owner', 'Manager', 'Student'] },
-    { id: 'notices', label: 'Notice Board', icon: <Megaphone className="w-4 h-4" />, roles: ['Owner', 'Manager', 'Student'] }
+    { id: 'notices', label: 'Notice Board', icon: <Megaphone className="w-4 h-4" />, roles: ['Owner', 'Manager', 'Student'] },
+    { id: 'whatsapp', label: 'WhatsApp Alerts', icon: <MessageSquare className="w-4 h-4" />, roles: ['Owner', 'Manager'] }
   ];
 
   const filteredNavItems = navItems.filter(item => item.roles.includes(activeRole));
+
+  if (!isAuthenticated) {
+    return <Login onLoginSuccess={handleLoginSuccess} students={students} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-100/50 flex flex-col text-slate-950 font-sans antialiased pb-12" id="hostel-root-container">
@@ -461,30 +497,72 @@ export default function App() {
           </div>
           
           <div className="flex items-center gap-2">
+            {/* Active User Badging */}
+            <div className="hidden sm:flex items-center gap-1 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 select-none">
+              <span className="text-slate-400">Portal:</span>
+              <span className="text-slate-900 font-extrabold">
+                {activeRole === 'Student' 
+                  ? (students.find(s => s.id === currentStudentId)?.name || 'Student')
+                  : activeRole
+                }
+              </span>
+            </div>
+
             <button
               onClick={handleResetDatabase}
               className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer"
               title="Reset Demo Data"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Reset Demo</span>
+              <span className="hidden md:inline">Reset Demo</span>
             </button>
-            <span className="bg-indigo-50 border border-indigo-200 text-indigo-800 text-[10px] font-black px-2.5 py-1.5 rounded-lg font-mono">
-              ₹ PHONEPE & GPAY INTEGRATED
-            </span>
+
+            <button
+              onClick={handleLogout}
+              className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              title="Sign Out"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
           </div>
         </div>
       </header>
 
-      {/* COMPONENT: Interactive multi-role preview helper */}
-      <div className="max-w-7xl mx-auto px-4 pt-6 w-full">
-        <RoleSelector
-          currentRole={activeRole}
-          onRoleChange={(role) => setActiveRole(role)}
-          students={students}
-          currentStudentId={currentStudentId}
-          onStudentIdChange={setCurrentStudentId}
-        />
+      {/* COMPONENT: Collapsible Interactive Dev Swapper Assistant */}
+      <div className="max-w-7xl mx-auto px-4 pt-4 w-full">
+        <div className="bg-slate-900 text-slate-300 rounded-xl p-3 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs shadow-md">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <p className="font-mono">
+              <strong className="text-white">Active Portal Session:</strong> Authenticated as <span className="text-indigo-400 font-bold">{activeRole}</span>
+              {activeRole === 'Student' && ` (${students.find(s => s.id === currentStudentId)?.name})`}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowDevSwapper(!showDevSwapper)}
+            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-bold font-mono text-[11px] transition-all cursor-pointer whitespace-nowrap self-end md:self-auto"
+          >
+            {showDevSwapper ? 'Hide Simulator Swapper ▲' : 'Bypass Credentials Swapper ▼'}
+          </button>
+        </div>
+
+        {showDevSwapper && (
+          <div className="mt-3 bg-white border border-slate-200 rounded-2xl p-4 shadow-xl animate-fade-in">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">Simulate other roles on-the-fly (Bypass Credentials Validation):</p>
+            <RoleSelector
+              currentRole={activeRole}
+              onRoleChange={(role) => setActiveRole(role)}
+              students={students}
+              currentStudentId={currentStudentId}
+              onStudentIdChange={setCurrentStudentId}
+            />
+          </div>
+        )}
       </div>
 
       {/* MAIN CONTAINER CONTENT BODY */}
@@ -597,6 +675,14 @@ export default function App() {
               notices={notices}
               onAddNotice={handleAddNotice}
               onDeleteNotice={handleDeleteNotice}
+            />
+          )}
+
+          {activeTab === 'whatsapp' && (
+            <WhatsAppNotificationSystem
+              role={activeRole}
+              students={students}
+              payments={payments}
             />
           )}
         </section>

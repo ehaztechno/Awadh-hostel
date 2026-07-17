@@ -63,9 +63,15 @@ export default function Dashboard({
             <div className="flex-1 space-y-1">
               <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800">Pending Rent Alert</h4>
               <p className="text-xs">Your rent for <span className="font-bold">{pendingRentObj.month}</span> (₹{pendingRentObj.amount.toLocaleString('en-IN')}) is pending. Please clear it by GPay/PhonePe to avoid a late fee.</p>
+              
+              <div className="mt-2 text-[10px] text-emerald-800 bg-emerald-100/50 border border-emerald-200/50 rounded-lg p-2 flex items-center gap-1.5 w-fit font-semibold">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Auto-Rent notification dispatched via WhatsApp on 5th July (5 days before due date)</span>
+              </div>
+
               <button 
                 onClick={() => onSelectStudentPortalOption?.('payments')}
-                className="text-xs font-bold text-indigo-700 hover:underline mt-1 block cursor-pointer"
+                className="text-xs font-bold text-indigo-700 hover:underline mt-2 block cursor-pointer"
               >
                 Go to Bills & Rent →
               </button>
